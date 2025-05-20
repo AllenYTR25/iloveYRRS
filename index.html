@@ -1,195 +1,148 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>iloveYRRS - Para Yule</title>
-
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Poppins&display=swap" rel="stylesheet">
-
-<style>
-  /* Reset básico */
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  body {
-    background: #000;
-    overflow: hidden;
-    font-family: 'Poppins', sans-serif;
-    color: white;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* Contenedor para la lluvia */
-  .container {
-    position: relative;
-    flex-grow: 1;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-  }
-
-  /* Texto romántico arriba */
-  .overlay-text {
-    position: absolute;
-    top: 30px;
-    width: 100%;
-    text-align: center;
-    font-family: 'Playfair Display', serif;
-    font-weight: 700;
-    font-size: 2.2rem;
-    letter-spacing: 0.08em;
-    color: #fce5f5;
-    text-shadow:
-      1px 1px 3px rgba(0,0,0,0.7),
-      0 0 10px #f06292;
-    z-index: 1000;
-    animation: glow 3s ease-in-out infinite alternate;
-  }
-
-  @keyframes glow {
-    0% {
-      text-shadow:
-      1px 1px 3px rgba(0,0,0,0.7),
-      0 0 10px #f06292;
-      color: #fce5f5;
-    }
-    100% {
-      text-shadow:
-      1px 1px 6px rgba(0,0,0,0.7),
-      0 0 25px #f48fb1;
-      color: #f8bbd0;
-    }
-  }
-
-  /* Columnas de 'te amo' */
-  .column {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    user-select: none;
-  }
-
-  .te-amo {
-    color: #ff1c1c;
-    font-size: 14px;
-    white-space: nowrap;
-    opacity: 1;
-    margin: 2px 0;
-    transition: opacity 0.3s linear;
-    font-weight: 600;
-    font-family: 'Poppins', sans-serif;
-  }
-
-  /* Contenedor de la imagen de las flores */
-  .flowers {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 320px;
-    height: auto;
-    z-index: 900;
-    border-radius: 12px;
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iloveYRRS</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            color: #fff;
+            overflow: hidden;
+        }
+        .container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+        }
+        .column {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+        }
+        .te-amo {
+            color: red;
+            font-size: 16px;
+            white-space: nowrap;
+            opacity: 1;
+            margin: 1px 0;
+        }
+        .orchid-container {
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+        .orchid-image {
+            width: 80%;
+            max-width: 500px;
+        }
+        .text-overlay {
+            position: absolute;
+            top: 5%;
+            width: 100%;
+            text-align: center;
+            font-size: 2rem;
+            font-family: 'Georgia', serif;
+            color: #fff;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+        }
+    </style>
 </head>
 <body>
+    <div class="container" id="container"></div>
+    <div class="orchid-container">
+        <img src="orchid_art.png" alt="White and Blue Orchids Drawing" class="orchid-image">
+    </div>
+    <div class="text-overlay">Para ti, mi amada Yule <3</div>
 
-<div class="container" id="container"></div>
-<div class="overlay-text">para ti mi amada Yule &lt;3</div>
+    <script>
+        const container = document.getElementById('container');
+        const screenHeight = window.innerHeight;
+        const screenWidth = window.innerWidth;
 
-<!-- Imagen de las flores -->
-<img src="orchid_art.png" alt="Orquídeas blancas y azules" class="flowers">
+        const columnCount = 20;
+        const fontSize = 16;
+        let syncFalling = true;
 
-<script>
-  const container = document.getElementById('container');
-  const screenHeight = window.innerHeight;
-  const screenWidth = window.innerWidth;
-
-  const columnCount = 20;
-  const fontSize = 16;
-  let syncFalling = true;
-
-  function createColumn(xPos) {
-    const col = document.createElement('div');
-    col.classList.add('column');
-    col.style.left = xPos + 'px';
-    return col;
-  }
-
-  const columns = [];
-  const spacing = Math.floor(screenWidth / columnCount);
-
-  for (let i = 0; i < columnCount; i++) {
-    const col = createColumn(i * spacing);
-    container.appendChild(col);
-
-    columns.push({
-      element: col,
-      y: -100 * Math.random(),
-      speed: 1 + Math.random() * 2,
-      disappearPoint: screenHeight * (0.7 + Math.random() * 0.2),
-    });
-
-    for (let j = 0; j < 60; j++) {
-      const texto = document.createElement('div');
-      texto.classList.add('te-amo');
-      texto.textContent = 'te amo';
-      col.appendChild(texto);
-    }
-  }
-
-  function animate() {
-    columns.forEach(col => {
-      if (syncFalling) {
-        col.y += 2;
-      } else {
-        col.y += col.speed;
-      }
-      col.element.style.top = col.y + 'px';
-
-      Array.from(col.element.children).forEach((child, idx) => {
-        const positionInColumn = idx * fontSize;
-        const visibilityThreshold = col.y - positionInColumn;
-
-        if (visibilityThreshold > 0 && visibilityThreshold < screenHeight) {
-          child.style.opacity = `${visibilityThreshold / screenHeight}`;
-        } else if (visibilityThreshold >= screenHeight) {
-          child.style.opacity = '1';
-        } else {
-          child.style.opacity = '0';
+        function createColumn(xPos) {
+            const col = document.createElement('div');
+            col.classList.add('column');
+            col.style.left = xPos + 'px';
+            return col;
         }
-      });
 
-      if (col.y > col.disappearPoint) {
-        col.y = -50 * Math.random();
-        col.speed = 1 + Math.random() * 2;
-      }
-    });
+        const columns = [];
+        const spacing = Math.floor(screenWidth / columnCount);
 
-    if (syncFalling) {
-      setTimeout(() => {
-        syncFalling = false;
-      }, 3000);
-    }
+        for (let i = 0; i < columnCount; i++) {
+            const col = createColumn(i * spacing);
+            container.appendChild(col);
 
-    requestAnimationFrame(animate);
-  }
+            columns.push({
+                element: col,
+                y: -100 * Math.random(),
+                speed: 1 + Math.random() * 2,
+                disappearPoint: screenHeight * (0.7 + Math.random() * 0.2),
+            });
 
-  animate();
+            for (let j = 0; j < 60; j++) {
+                const texto = document.createElement('div');
+                texto.classList.add('te-amo');
+                texto.textContent = 'te amo <3';
+                col.appendChild(texto);
+            }
+        }
 
-  window.addEventListener('resize', () => {
-    location.reload();
-  });
-</script>
+        function animate() {
+            columns.forEach(col => {
+                if (syncFalling) {
+                    col.y += 2;
+                } else {
+                    col.y += col.speed;
+                }
+                col.element.style.top = col.y + 'px';
 
+                Array.from(col.element.children).forEach((child, idx) => {
+                    const positionInColumn = idx * fontSize;
+                    const visibilityThreshold = col.y - positionInColumn;
+
+                    if (visibilityThreshold > 0 && visibilityThreshold < screenHeight) {
+                        child.style.opacity = `${visibilityThreshold / screenHeight}`;
+                    } else if (visibilityThreshold >= screenHeight) {
+                        child.style.opacity = '1';
+                    } else {
+                        child.style.opacity = '0';
+                    }
+                });
+
+                if (col.y > col.disappearPoint) {
+                    col.y = -50 * Math.random();
+                    col.speed = 1 + Math.random() * 2;
+                }
+            });
+
+            if (syncFalling) {
+                setTimeout(() => {
+                    syncFalling = false;
+                }, 3000);
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            location.reload();
+        });
+    </script>
 </body>
 </html>
-
