@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Lluvia de "te amo"</title>
+<style>
+  body {
+    background: #000;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    color: white;
+  }
+  .container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+  }
+  .column {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+  }
+  .te-amo {
+    color: red;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 1;
+    margin: 1px 0;
+    transition: opacity 0.3s linear;
+  }
+  .overlay-text {
+    position: absolute;
+    top: 10px;
+    width: 100%;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    z-index: 10;
+    color: white;
+    text-shadow: 0 0 5px black;
+  }
+  .orchid-image {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    z-index: 10;
+  }
+</style>
+</head>
+<body>
+
+<div class="container" id="container"></div>
+
+<!-- Texto arriba de la imagen -->
+<div class="overlay-text">para ti mi amada Yule &lt;3</div>
+
+<!-- Imagen de la orquídea -->
+<img src="orchid_art.png" alt="White and Blue Orchids Drawing" class="orchid-image">
+
+<script>
+  const container = document.getElementById('container');
+  const screenHeight = window.innerHeight;
+  const screenWidth = window.innerWidth;
+
+  const columnCount = 20; // Número de columnas
+  const fontSize = 14; // Tamaño para espaciar filas
+  let syncFalling = true; // Control para inicio sincronizado
+
+  function createColumn(xPos) {
+    const col = document.createElement('div');
+    col.classList.add('column');
+    col.style.left = xPos + 'px';
+    return col;
+  }
+
+  const columns = [];
+  const spacing = Math.floor(screenWidth / columnCount);
+
+  for (let i = 0; i < columnCount; i++) {
+    const col = createColumn(i * spacing);
+    container.appendChild(col);
+
+    columns.push({
+      element: col,
+      y: -100 * Math.random(), // Inicialmente aleatorio
+      speed: 1 + Math.random() * 2, // Velocidades variables
+      disappearPoint: screenHeight * (0.7 + Math.random() * 0.2), // Desaparición aleatoria
+    });
+
+    // Generar "te amo" infinitos
+    for (let j = 0; j < 50; j++) {
+      const texto = document.createElement('div');
+      texto.classList.add('te-amo');
+      texto.textContent = 'te amo';
+      col.appendChild(texto);
+    }
+  }
+
+  function animate() {
+    columns.forEach(col => {
+      if (syncFalling) {
+        col.y += 2; // Todas las columnas caen sincronizadas al inicio
+      } else {
+        col.y += col.speed; // Velocidad individual tras desincronización
+      }
+      col.element.style.top = col.y + 'px';
+
+      Array.from(col.element.children).forEach((child, idx) => {
+        const positionInColumn = idx * fontSize;
+        const visibilityThreshold = col.y - positionInColumn;
+
+        if (visibilityThreshold > 0 && visibilityThreshold < screenHeight) {
+          child.style.opacity = `${1 - visibilityThreshold / screenHeight}`;
+        } else if (visibilityThreshold > screenHeight) {
+          child.style.opacity = '0';
+        }
+      });
+
+      if (col.y > col.disappearPoint) {
+        col.y = -50 * Math.random();
+        col.speed = 1 + Math.random() * 2; // Reiniciar velocidad
+      }
+    });
+
+    if (syncFalling) {
+      setTimeout(() => {
+        syncFalling = false; // Desincronizar después de un tiempo
+      }, 3000); // 3 segundos para sincronización inicial
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+
+  window.addEventListener('resize', () => {
+    location.reload();
+  });
+</script>
+
+</body>
+</html>
+
