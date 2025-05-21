@@ -1,4 +1,70 @@
-<script>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iloveYRRS</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            color: #fff;
+            overflow: hidden;
+            background-color: #000; /* Fondo negro */
+        }
+        .container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+        }
+        .column {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+        }
+        .te-amo {
+            color: red;
+            font-size: 16px;
+            white-space: nowrap;
+            opacity: 1;
+            margin: 1px 0;
+        }
+        .orchid-container {
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+        .orchid-image {
+            width: 80%;
+            max-width: 500px;
+        }
+        .text-overlay {
+            position: absolute;
+            top: 5%;
+            width: 100%;
+            text-align: center;
+            font-size: 2rem;
+            font-family: 'Georgia', serif;
+            color: #fff;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="container"></div>
+    <div class="orchid-container">
+        <img src="orchid_art.png" alt="White and Blue Orchids Drawing" class="orchid-image">
+    </div>
+    <div class="text-overlay">Para ti, mi amada Yule <3</div>
+
+  <script>
     const container = document.getElementById('container');
     const screenHeight = window.innerHeight;
     const screenWidth = window.innerWidth;
@@ -79,4 +145,5 @@
         location.reload();
     });
 </script>
-
+</body>
+</html>
