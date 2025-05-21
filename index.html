@@ -1,149 +1,82 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iloveYRRS</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            color: #fff;
-            overflow: hidden;
-            background-color: #000; /* Fondo negro */
-        }
-        .container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-        }
-        .column {
-            position: absolute;
-            display: flex;
-            flex-direction: column;
-            user-select: none;
-        }
-        .te-amo {
-            color: red;
-            font-size: 16px;
-            white-space: nowrap;
-            opacity: 1;
-            margin: 1px 0;
-        }
-        .orchid-container {
-            position: absolute;
-            bottom: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-        }
-        .orchid-image {
-            width: 80%;
-            max-width: 500px;
-        }
-        .text-overlay {
-            position: absolute;
-            top: 5%;
-            width: 100%;
-            text-align: center;
-            font-size: 2rem;
-            font-family: 'Georgia', serif;
-            color: #fff;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
-        }
-    </style>
-</head>
-<body>
-    <div class="container" id="container"></div>
-    <div class="orchid-container">
-        <img src="orchid_art.png" alt="White and Blue Orchids Drawing" class="orchid-image">
-    </div>
-    <div class="text-overlay">Para ti, mi amada Yule <3</div>
+<script>
+    const container = document.getElementById('container');
+    const screenHeight = window.innerHeight;
+    const screenWidth = window.innerWidth;
 
-    <script>
-        const container = document.getElementById('container');
-        const screenHeight = window.innerHeight;
-        const screenWidth = window.innerWidth;
+    const columnCount = 20;
+    const fontSize = 16;
+    let syncFalling = true;
 
-        const columnCount = 20;
-        const fontSize = 16;
-        let syncFalling = true;
+    function createColumn(xPos) {
+        const col = document.createElement('div');
+        col.classList.add('column');
+        col.style.left = xPos + 'px';
+        return col;
+    }
 
-        function createColumn(xPos) {
-            const col = document.createElement('div');
-            col.classList.add('column');
-            col.style.left = xPos + 'px';
-            return col;
-        }
+    const columns = [];
+    const spacing = Math.floor(screenWidth / columnCount);
 
-        const columns = [];
-        const spacing = Math.floor(screenWidth / columnCount);
+    for (let i = 0; i < columnCount; i++) {
+        const col = createColumn(i * spacing);
+        container.appendChild(col);
 
-        for (let i = 0; i < columnCount; i++) {
-            const col = createColumn(i * spacing);
-            container.appendChild(col);
-
-            columns.push({
-                element: col,
-                y: -100 * Math.random(),
-                speed: 1 + Math.random() * 2,
-                disappearPoint: screenHeight * (0.7 + Math.random() * 0.2),
-            });
-
-            for (let j = 0; j < 60; j++) {
-                const texto = document.createElement('div');
-                texto.classList.add('te-amo');
-                texto.textContent = 'te amo <3';
-                col.appendChild(texto);
-            }
-        }
-
-        function animate() {
-            columns.forEach(col => {
-                if (syncFalling) {
-                    col.y += 2;
-                } else {
-                    col.y += col.speed;
-                }
-                col.element.style.top = col.y + 'px';
-
-                Array.from(col.element.children).forEach((child, idx) => {
-                    const positionInColumn = idx * fontSize;
-                    const visibilityThreshold = col.y - positionInColumn;
-
-                    if (visibilityThreshold > 0 && visibilityThreshold < screenHeight) {
-                        child.style.opacity = `${visibilityThreshold / screenHeight}`;
-                    } else if (visibilityThreshold >= screenHeight) {
-                        child.style.opacity = '1';
-                    } else {
-                        child.style.opacity = '0';
-                    }
-                });
-
-                if (col.y > col.disappearPoint) {
-                    col.y = -50 * Math.random();
-                    col.speed = 1 + Math.random() * 2;
-                }
-            });
-
-            if (syncFalling) {
-                setTimeout(() => {
-                    syncFalling = false;
-                }, 3000);
-            }
-
-            requestAnimationFrame(animate);
-        }
-
-        animate();
-
-        window.addEventListener('resize', () => {
-            location.reload();
+        columns.push({
+            element: col,
+            y: -100 * Math.random(),
+            speed: 0.3 + Math.random() * 0.7, // Velocidad más lenta
+            disappearPoint: screenHeight * (0.7 + Math.random() * 0.2),
         });
-    </script>
-</body>
-</html>
+
+        for (let j = 0; j < 60; j++) {
+            const texto = document.createElement('div');
+            texto.classList.add('te-amo');
+            texto.textContent = 'te amo <3';
+            col.appendChild(texto);
+        }
+    }
+
+    function animate() {
+        columns.forEach(col => {
+            if (syncFalling) {
+                col.y += 1; // Caída inicial sincronizada más lenta
+            } else {
+                col.y += col.speed; // Velocidades individuales más lentas
+            }
+            col.element.style.top = col.y + 'px';
+
+            Array.from(col.element.children).forEach((child, idx) => {
+                const positionInColumn = idx * fontSize;
+                const visibilityThreshold = col.y - positionInColumn;
+
+                if (visibilityThreshold > 0 && visibilityThreshold < screenHeight) {
+                    child.style.opacity = `${visibilityThreshold / screenHeight}`;
+                } else if (visibilityThreshold >= screenHeight) {
+                    child.style.opacity = '1';
+                } else {
+                    child.style.opacity = '0';
+                }
+            });
+
+            if (col.y > col.disappearPoint) {
+                col.y = -50 * Math.random();
+                col.speed = 0.3 + Math.random() * 0.7; // Reiniciar con velocidad lenta
+            }
+        });
+
+        if (syncFalling) {
+            setTimeout(() => {
+                syncFalling = false;
+            }, 3000);
+        }
+
+        requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    window.addEventListener('resize', () => {
+        location.reload();
+    });
+</script>
+
