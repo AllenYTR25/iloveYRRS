@@ -5,53 +5,43 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Felices 10 meses</title>
 <style>
-  /* Fondo negro y animación de mariposas */
-  body, html {
-    margin: 0; padding: 0;
-    height: 100%;
-    background: black;
+  body {
+    margin: 0;
     overflow: hidden;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: Arial, sans-serif;
+    background-color: black;
     color: white;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 20px;
-    box-sizing: border-box;
+    height: 100vh;
   }
 
-  .container {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-  }
-
-  .butterfly {
+  canvas {
     position: absolute;
-    width: 25px;
-    height: 25px;
-    background: url('https://i.imgur.com/9OaX3Fa.png') no-repeat center / contain;
-    animation-timing-function: linear;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
   }
 
-  /* Mensaje central */
   .message-box {
     position: relative;
-    background: rgba(0,0,0,0.6);
-    padding: 25px 20px;
+    z-index: 1;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20px;
     border-radius: 12px;
-    max-width: 350px;
-    font-size: 1.1rem;
-    line-height: 1.4;
-    box-shadow: 0 0 20px #4a90e2aa;
-    user-select: none;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+    max-width: 90%;
+    font-size: 1rem;
+    line-height: 1.5;
   }
 
-  /* Botón de reproducir */
   #btnReproducir {
     margin-top: 15px;
-    background: #4a90e2;
+    background: #ff4d4d;
     border: none;
     padding: 10px 20px;
     font-size: 1rem;
@@ -59,22 +49,20 @@
     color: white;
     cursor: pointer;
     transition: background 0.3s ease;
-    user-select: none;
-  }
-  #btnReproducir:hover {
-    background: #357ABD;
   }
 
-  /* Responsive */
-  @media (max-width: 400px) {
+  #btnReproducir:hover {
+    background: #cc0000;
+  }
+
+  @media (max-width: 768px) {
     .message-box {
-      max-width: 90vw;
-      font-size: 1rem;
-      padding: 20px 15px;
+      font-size: 0.9rem;
+      padding: 15px;
     }
     #btnReproducir {
       width: 100%;
-      font-size: 1.1rem;
+      font-size: 1rem;
       padding: 12px 0;
     }
   }
@@ -82,7 +70,7 @@
 </head>
 <body>
 
-<div class="container" id="container"></div>
+<canvas id="background"></canvas>
 
 <div class="message-box">
   Felices 10 meses, te amo muchísimo mi amada novia, no sabes lo feliz que me hizo esta salida,  
@@ -95,63 +83,58 @@
 </div>
 
 <audio id="miAudio" loop>
-  <source src="https://drive.google.com/file/d/1ynnDez8VsCWTlME-bkz1h767gVcLnidp/view?usp=sharing" type="audio/mpeg" />
+  <source src="https://drive.google.com/uc?export=download&id=1ynnDez8VsCWTlME-bkz1h767gVcLnidp" type="audio/mpeg" />
   Tu navegador no soporta el elemento de audio.
 </audio>
 
 <script>
-// Animación mariposas - del código original (simplificada)
-const container = document.getElementById('container');
+  const canvas = document.getElementById("background");
+  const ctx = canvas.getContext("2d");
 
-function crearMariposa() {
-  const mariposa = document.createElement('div');
-  mariposa.className = 'butterfly';
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 
-  // Posición inicial aleatoria vertical
-  mariposa.style.top = `${Math.random() * window.innerHeight}px`;
-  mariposa.style.left = `-${30}px`; // Comienza fuera de pantalla a la izquierda
+  const letters = "Te amo ".split("");
+  const fontSize = 18;
+  const columns = canvas.width / fontSize;
 
-  // Velocidad aleatoria
-  const duracion = 10 + Math.random() * 10;
+  const drops = Array.from({ length: columns }, () => Math.random() * canvas.height);
 
-  mariposa.style.animation = `moverMariposa ${duracion}s linear forwards`;
+  function draw() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  container.appendChild(mariposa);
+    ctx.fillStyle = "#ff0000";
+    ctx.font = `${fontSize}px monospace`;
 
-  // Animación personalizada con JS porque CSS no permite mover en línea recta simple con translateX
-  let posX = -30;
-  const posY = parseFloat(mariposa.style.top);
-  const velocidad = window.innerWidth / (duracion * 60); // píxeles por frame (asumiendo 60fps)
+    drops.forEach((y, x) => {
+      const text = letters[Math.floor(Math.random() * letters.length)];
+      ctx.fillText(text, x * fontSize, y);
 
-  function frame() {
-    posX += velocidad;
-    mariposa.style.left = posX + 'px';
+      if (y > canvas.height && Math.random() > 0.975) {
+        drops[x] = 0;
+      }
 
-    // Movimiento vertical oscilante
-    mariposa.style.top = posY + 15 * Math.sin(posX / 30) + 'px';
-
-    if (posX < window.innerWidth + 30) {
-      requestAnimationFrame(frame);
-    } else {
-      container.removeChild(mariposa);
-    }
+      drops[x] += fontSize;
+    });
   }
 
-  requestAnimationFrame(frame);
-}
+  setInterval(draw, 50);
 
-setInterval(crearMariposa, 600);
+  window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
 
-// Botón reproducir audio
-const audio = document.getElementById('miAudio');
-const btn = document.getElementById('btnReproducir');
+  // Música
+  const audio = document.getElementById('miAudio');
+  const btn = document.getElementById('btnReproducir');
 
-btn.addEventListener('click', () => {
-  audio.play();
-  btn.style.display = 'none';
-});
+  btn.addEventListener('click', () => {
+    audio.play();
+    btn.style.display = 'none'; // Oculta el botón después de reproducir
+  });
 </script>
 
 </body>
 </html>
-    
