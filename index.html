@@ -12,14 +12,16 @@
     background-color: black;
     color: white;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
     height: 100vh;
+    padding: 10px;
   }
 
   canvas {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
@@ -37,6 +39,29 @@
     max-width: 90%;
     font-size: 1rem;
     line-height: 1.5;
+    margin-bottom: 15px;
+  }
+
+  .flowers-section {
+    position: relative;
+    z-index: 1;
+    color: #ff66cc;
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-top: 10px;
+    user-select: none;
+  }
+
+  .flowers {
+    margin-top: 10px;
+    user-select: none;
+  }
+
+  .flowers img {
+    max-width: 80vw;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 0 10px #ff66cc;
   }
 
   #btnReproducir {
@@ -65,6 +90,12 @@
       font-size: 1rem;
       padding: 12px 0;
     }
+    .flowers-section {
+      font-size: 1rem;
+    }
+    .flowers img {
+      max-width: 90vw;
+    }
   }
 </style>
 </head>
@@ -80,6 +111,13 @@
   te adoro mi próxima enfermera, mi futura neonatóloga, felices 10 meses, mua &lt;3
   <br />
   <button id="btnReproducir">Reprodúceme 🎵</button>
+</div>
+
+<div class="flowers-section">
+  Para ti mi amada novia &lt;3
+  <div class="flowers">
+    <img src="orquídea_arte.png" alt="Orquídeas para mi amada novia" />
+  </div>
 </div>
 
 <audio id="miAudio" loop>
@@ -101,7 +139,6 @@
   const phrase = "Te amo ";
   let fontSize = 18;
 
-  // Ajustar fontSize según ancho pantalla para que caigan más frases en móvil
   if(window.innerWidth < 500){
     fontSize = 12;
   } else if(window.innerWidth < 768){
@@ -110,18 +147,13 @@
 
   ctx.font = `${fontSize}px monospace`;
 
-  // Calcular ancho de la frase para saber espacio por columna
   const phraseWidth = ctx.measureText(phrase).width;
 
-  // Calcular columnas posibles según el ancho del canvas y ancho de la frase
   let columns = Math.floor(canvas.width / phraseWidth);
-
-  // Si columnas es muy bajo (menos de 5), forzamos 5 para que no se vea tan limitado
   if(columns < 5){
     columns = 5;
   }
 
-  // Array con la posición vertical de cada columna
   const drops = Array(columns).fill(0).map(() => Math.random() * canvas.height);
 
   function draw() {
@@ -146,7 +178,6 @@
 
   window.addEventListener("resize", () => {
     setupCanvas();
-    // recalcular columnas y drops al redimensionar
     ctx.font = `${fontSize}px monospace`;
     const newPhraseWidth = ctx.measureText(phrase).width;
     columns = Math.floor(canvas.width / newPhraseWidth);
@@ -159,13 +190,12 @@
     }
   });
 
-  // Música
   const audio = document.getElementById('miAudio');
   const btn = document.getElementById('btnReproducir');
 
   btn.addEventListener('click', () => {
     audio.play();
-    btn.style.display = 'none'; // Oculta el botón después de reproducir
+    btn.style.display = 'none';
   });
 </script>
 
