@@ -94,10 +94,11 @@
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 
-  const letters = "Te amo ".split("");
+  const phrase = "Te amo ";
   const fontSize = 18;
-  const columns = canvas.width / fontSize;
+  const columns = Math.floor(canvas.width / (fontSize * phrase.length)); // columnas basadas en la longitud de la frase
 
+  // Array que guarda la posición vertical de cada columna para la caída
   const drops = Array.from({ length: columns }, () => Math.random() * canvas.height);
 
   function draw() {
@@ -108,8 +109,7 @@
     ctx.font = `${fontSize}px monospace`;
 
     drops.forEach((y, x) => {
-      const text = letters[Math.floor(Math.random() * letters.length)];
-      ctx.fillText(text, x * fontSize, y);
+      ctx.fillText(phrase, x * fontSize * phrase.length, y);
 
       if (y > canvas.height && Math.random() > 0.975) {
         drops[x] = 0;
