@@ -91,15 +91,38 @@
   const canvas = document.getElementById("background");
   const ctx = canvas.getContext("2d");
 
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  function setupCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  setupCanvas();
 
   const phrase = "Te amo ";
-  const fontSize = 18;
-  const columns = Math.floor(canvas.width / (fontSize * phrase.length)); // columnas basadas en la longitud de la frase
+  let fontSize = 18;
 
-  // Array que guarda la posición vertical de cada columna para la caída
-  const drops = Array.from({ length: columns }, () => Math.random() * canvas.height);
+  // Ajustar fontSize según ancho pantalla para que caigan más frases en móvil
+  if(window.innerWidth < 500){
+    fontSize = 12;
+  } else if(window.innerWidth < 768){
+    fontSize = 14;
+  }
+
+  ctx.font = `${fontSize}px monospace`;
+
+  // Calcular ancho de la frase para saber espacio por columna
+  const phraseWidth = ctx.measureText(phrase).width;
+
+  // Calcular columnas posibles según el ancho del canvas y ancho de la frase
+  let columns = Math.floor(canvas.width / phraseWidth);
+
+  // Si columnas es muy bajo (menos de 5), forzamos 5 para que no se vea tan limitado
+  if(columns < 5){
+    columns = 5;
+  }
+
+  // Array con la posición vertical de cada columna
+  const drops = Array(columns).fill(0).map(() => Math.random() * canvas.height);
 
   function draw() {
     ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
@@ -109,7 +132,7 @@
     ctx.font = `${fontSize}px monospace`;
 
     drops.forEach((y, x) => {
-      ctx.fillText(phrase, x * fontSize * phrase.length, y);
+      ctx.fillText(phrase, x * phraseWidth, y);
 
       if (y > canvas.height && Math.random() > 0.975) {
         drops[x] = 0;
@@ -122,8 +145,18 @@
   setInterval(draw, 50);
 
   window.addEventListener("resize", () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    setupCanvas();
+    // recalcular columnas y drops al redimensionar
+    ctx.font = `${fontSize}px monospace`;
+    const newPhraseWidth = ctx.measureText(phrase).width;
+    columns = Math.floor(canvas.width / newPhraseWidth);
+    if(columns < 5){
+      columns = 5;
+    }
+    drops.length = columns;
+    for(let i = 0; i < columns; i++){
+      drops[i] = Math.random() * canvas.height;
+    }
   });
 
   // Música
