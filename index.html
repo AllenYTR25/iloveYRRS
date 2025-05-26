@@ -1,149 +1,157 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iloveYRRS</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            color: #fff;
-            overflow: hidden;
-            background-color: #000; /* Fondo negro */
-        }
-        .container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-        }
-        .column {
-            position: absolute;
-            display: flex;
-            flex-direction: column;
-            user-select: none;
-        }
-        .te-amo {
-            color: red;
-            font-size: 16px;
-            white-space: nowrap;
-            opacity: 1;
-            margin: 1px 0;
-        }
-        .orchid-container {
-            position: absolute;
-            bottom: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-        }
-        .orchid-image {
-            width: 80%;
-            max-width: 500px;
-        }
-        .text-overlay {
-            position: absolute;
-            top: 5%;
-            width: 100%;
-            text-align: center;
-            font-size: 2rem;
-            font-family: 'Georgia', serif;
-            color: #fff;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Felices 10 meses</title>
+<style>
+  /* Fondo negro y animación de mariposas */
+  body, html {
+    margin: 0; padding: 0;
+    height: 100%;
+    background: black;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .butterfly {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    background: url('https://i.imgur.com/9OaX3Fa.png') no-repeat center / contain;
+    animation-timing-function: linear;
+  }
+
+  /* Mensaje central */
+  .message-box {
+    position: relative;
+    background: rgba(0,0,0,0.6);
+    padding: 25px 20px;
+    border-radius: 12px;
+    max-width: 350px;
+    font-size: 1.1rem;
+    line-height: 1.4;
+    box-shadow: 0 0 20px #4a90e2aa;
+    user-select: none;
+  }
+
+  /* Botón de reproducir */
+  #btnReproducir {
+    margin-top: 15px;
+    background: #4a90e2;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    user-select: none;
+  }
+  #btnReproducir:hover {
+    background: #357ABD;
+  }
+
+  /* Responsive */
+  @media (max-width: 400px) {
+    .message-box {
+      max-width: 90vw;
+      font-size: 1rem;
+      padding: 20px 15px;
+    }
+    #btnReproducir {
+      width: 100%;
+      font-size: 1.1rem;
+      padding: 12px 0;
+    }
+  }
+</style>
 </head>
 <body>
-    <div class="container" id="container"></div>
-    <div class="orchid-container">
-        <img src="orchid_art.png" alt="White and Blue Orchids Drawing" class="orchid-image">
-    </div>
-    <div class="text-overlay">Para ti, mi amada Yule <3</div>
 
-  <script>
-    const container = document.getElementById('container');
-    const screenHeight = window.innerHeight;
-    const screenWidth = window.innerWidth;
+<div class="container" id="container"></div>
 
-    const columnCount = 20;
-    const fontSize = 16;
-    let syncFalling = true;
+<div class="message-box">
+  Felices 10 meses, te amo muchísimo mi amada novia, no sabes lo feliz que me hizo esta salida,  
+  lo mucho que me divertí y lo mucho que amé grabar videos de novios, sobre todo repetirlos &lt;3,  
+  aaaaaaaa, realmente me haces sentir amado sin necesidad de decir te amo, pero, siempre que pueda te lo diré,  
+  te amo mi chaparrita hermosa, te adoro mi niña preciosa, me encantas mi mujer inteligente,  
+  te adoro mi próxima enfermera, mi futura neonatóloga, felices 10 meses, mua &lt;3
+  <br />
+  <button id="btnReproducir">Reprodúceme 🎵</button>
+</div>
 
-    function createColumn(xPos) {
-        const col = document.createElement('div');
-        col.classList.add('column');
-        col.style.left = xPos + 'px';
-        return col;
+<audio id="miAudio" loop>
+  <source src="https://drive.google.com/file/d/1ynnDez8VsCWTlME-bkz1h767gVcLnidp/view?usp=sharing" type="audio/mpeg" />
+  Tu navegador no soporta el elemento de audio.
+</audio>
+
+<script>
+// Animación mariposas - del código original (simplificada)
+const container = document.getElementById('container');
+
+function crearMariposa() {
+  const mariposa = document.createElement('div');
+  mariposa.className = 'butterfly';
+
+  // Posición inicial aleatoria vertical
+  mariposa.style.top = `${Math.random() * window.innerHeight}px`;
+  mariposa.style.left = `-${30}px`; // Comienza fuera de pantalla a la izquierda
+
+  // Velocidad aleatoria
+  const duracion = 10 + Math.random() * 10;
+
+  mariposa.style.animation = `moverMariposa ${duracion}s linear forwards`;
+
+  container.appendChild(mariposa);
+
+  // Animación personalizada con JS porque CSS no permite mover en línea recta simple con translateX
+  let posX = -30;
+  const posY = parseFloat(mariposa.style.top);
+  const velocidad = window.innerWidth / (duracion * 60); // píxeles por frame (asumiendo 60fps)
+
+  function frame() {
+    posX += velocidad;
+    mariposa.style.left = posX + 'px';
+
+    // Movimiento vertical oscilante
+    mariposa.style.top = posY + 15 * Math.sin(posX / 30) + 'px';
+
+    if (posX < window.innerWidth + 30) {
+      requestAnimationFrame(frame);
+    } else {
+      container.removeChild(mariposa);
     }
+  }
 
-    const columns = [];
-    const spacing = Math.floor(screenWidth / columnCount);
+  requestAnimationFrame(frame);
+}
 
-    for (let i = 0; i < columnCount; i++) {
-        const col = createColumn(i * spacing);
-        container.appendChild(col);
+setInterval(crearMariposa, 600);
 
-        columns.push({
-            element: col,
-            y: -100 * Math.random(),
-            speed: 0.3 + Math.random() * 0.7, // Velocidad más lenta
-            disappearPoint: screenHeight * (0.7 + Math.random() * 0.2),
-        });
+// Botón reproducir audio
+const audio = document.getElementById('miAudio');
+const btn = document.getElementById('btnReproducir');
 
-        for (let j = 0; j < 60; j++) {
-            const texto = document.createElement('div');
-            texto.classList.add('te-amo');
-            texto.textContent = 'te amo <3';
-            col.appendChild(texto);
-        }
-    }
-
-    function animate() {
-        columns.forEach(col => {
-            if (syncFalling) {
-                col.y += 1; // Caída inicial sincronizada más lenta
-            } else {
-                col.y += col.speed; // Velocidades individuales más lentas
-            }
-            col.element.style.top = col.y + 'px';
-
-            Array.from(col.element.children).forEach((child, idx) => {
-                const positionInColumn = idx * fontSize;
-                const visibilityThreshold = col.y - positionInColumn;
-
-                if (visibilityThreshold > 0 && visibilityThreshold < screenHeight) {
-                    child.style.opacity = `${visibilityThreshold / screenHeight}`;
-                } else if (visibilityThreshold >= screenHeight) {
-                    child.style.opacity = '1';
-                } else {
-                    child.style.opacity = '0';
-                }
-            });
-
-            if (col.y > col.disappearPoint) {
-                col.y = -50 * Math.random();
-                col.speed = 0.3 + Math.random() * 0.7; // Reiniciar con velocidad lenta
-            }
-        });
-
-        if (syncFalling) {
-            setTimeout(() => {
-                syncFalling = false;
-            }, 3000);
-        }
-
-        requestAnimationFrame(animate);
-    }
-
-    animate();
-
-    window.addEventListener('resize', () => {
-        location.reload();
-    });
+btn.addEventListener('click', () => {
+  audio.play();
+  btn.style.display = 'none';
+});
 </script>
+
 </body>
 </html>
+    
